@@ -1,0 +1,77 @@
+version: '2'
+
+services:
+  db:
+    image: mariadb
+    container_name: db
+    restart: always
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql:rw
+    working_dir: /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    working_dir: /www
+    ports:
+      - 8080:80
+    links:
+      - db:db
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+
+  php-7.2-apache:
+    build: php-7.2-apache
+    image: php-7.2-apache
+    container_name: php72
+    restart: always
+    volumes:
+      - /home/fsevestre/Workspace/:/var/www/html/
+      - /home/fsevestre/.composer:/home/fsevestre/.composer
+    working_dir: /var/www/html
+    environment:
+      - BLACKFIRE_CLIENT_ID
+      - BLACKFIRE_CLIENT_TOKEN
+    ports:
+      - 80:80
+
+      # Some IPs for the `php bin/console server:start 0.0.0.0:XXXXX` Symfony command.
+      - 50000:50000
+      - 50001:50001
+      - 50003:50003
+      - 50004:50004
+      - 50005:50005
+      - 50006:50006
+      - 50007:50007
+      - 50008:50008
+      - 50009:50009
+    links:
+      - db:mysql_database
+      - blackfire:blackfire
+
+  blackfire:
+    image: blackfire/blackfire
+    container_name: blackfire
+    environment:
+      - BLACKFIRE_SERVER_ID
+      - BLACKFIRE_SERVER_TOKEN
+      # You can also use global environment credentials :
+      # BLACKFIRE_SERVER_ID: SERVER-ID
+      # BLACKFIRE_SERVER_TOKEN: SERVER-TOKEN
+
+  varnish:
+    build: varnish
+    image: varnish
+    container_name: varnish
+    tmpfs:
+      - /usr/local/var/varnish:exec
+    ports:
+      - 8081:80
+    links:
+      - php-7.2-apache

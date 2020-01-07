@@ -1,0 +1,29 @@
+[user]
+  name = guillaume-L
+  email = aniki.taicho@gmail.com
+  signingkey = {{ GITHUB_SIGNING_KEY }}
+[core]
+  excludesfile = /home/guihome/.gitignore_global
+  pager = diff-so-fancy | less --tabs=1,5 -R
+[push]
+  default = current
+[commit]
+  gpgsign = true
+[alias]
+  ci = commit
+  co = checkout
+  st = status
+  br = branch
+  ds = diff --staged
+[color "diff"]
+  meta = "yellow bold"
+  commit = "green bold"
+  frag = "magenta bold"
+  old = "red bold"
+  new = "green bold"
+  whitespace = "red reverse"
+[color "diff-highlight"]
+  oldNormal = "red bold"
+  oldHighlight = "red bold 52"
+  newNormal = "green bold"
+  newHighlight = "green bold 22"

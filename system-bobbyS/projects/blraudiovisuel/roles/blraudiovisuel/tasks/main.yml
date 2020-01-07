@@ -1,0 +1,11 @@
+---
+- name: Checkout project
+  git: repo=https://{{ github_token }}:x-oauth-basic@github.com/fsevestre/blraudiovisuel.git dest={{ project_root }} version={{ git_version }} force=yes accept_hostkey=yes
+
+- name: Override parameters configuration
+  template: src=parameters.yml.j2 dest={{ project_root }}/app/config/parameters.yml mode=0644
+
+- name: Install project
+  make:
+    chdir:  "{{ project_root }}"
+    target: install

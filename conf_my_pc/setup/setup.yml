@@ -1,0 +1,42 @@
+---
+- name: System - Setup development environment
+  hosts: localhost
+  roles:
+    - { role: setup }
+
+#Based on @Timur's answer I've created the following handy script
+#
+#Setup
+#
+#Put docker-ssh file in your $PATH with the following contents
+#
+##!/bin/bash -xe
+#
+## docker id might be given as a parameter
+#DID=$1
+#
+#if [[ "$DID" == "" ]]; then
+#  # if no id given simply just connect to the first running instance
+#  DID=$(docker ps | grep -Eo "^[0-9a-z]{8,}\b")
+#fi
+#
+#docker exec -i -t $DID bash
+#Usage
+#
+#If you have one running instance simply run
+#
+#$> docker-ssh
+#Otherwise provide it with a docker id parmeter that you get from docker ps (first col)
+#
+#$> docker-ssh 50m3r4nd0m1d
+
+
+# docker exec -it -u $(id -u) php-7.0-apache bash
+
+
+
+
+##!/bin/bash -xe
+#
+#docker exec -it -u $(id -u) $1 bash
+#docker exec -it -u root $1 bash

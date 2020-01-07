@@ -1,0 +1,109 @@
+---
+- name: 'System | Install useful tools'
+  apt:
+    pkg: '{{ item }}'
+    state: 'present'
+  become: true
+  with_items:
+    - 'curl'
+    - 'gedit'
+    - 'git'
+    - 'gzip'
+    - 'htop'
+    - 'terminator'
+    - 'tree'
+    - 'vim'
+    - 'xclip'
+    - 'zsh'
+
+- name: 'System | Install fonts for theme zsh (agnoster-custom)'
+  unarchive:
+    src: 'fonts.otf.tgz'
+    dest: '/usr/share/fonts/opentype/'
+  become: true
+
+- name: 'System | Install fonts for theme antigen (zsh)'
+  unarchive:
+    src: 'fonts.ttf.tgz'
+    dest: '/usr/share/fonts/truetype/'
+  become: true
+
+- name: 'System | Install oh-my-zsh'
+  git:
+    repo: 'git://github.com/robbyrussell/oh-my-zsh.git'
+    dest: '/home/fsevestre/.oh-my-zsh'
+    version: 'master'
+    force: 'yes'
+    accept_hostkey: 'yes'
+
+- name: 'System | Install antigen'
+  git:
+    repo: 'git://github.com/zsh-users/antigen.git'
+    dest: '/home/fsevestre/.antigen'
+    version: 'master'
+    force: 'yes'
+    accept_hostkey: 'yes'
+
+- name: 'System | Set zsh as default'
+  user:
+    name: 'fsevestre'
+    shell: '/bin/zsh'
+  become: true
+
+- name: 'System | Config zsh'
+  template:
+    src: 'zshrc.j2'
+    dest: '/home/fsevestre/.zshrc'
+
+- name: 'System | Create config directory for terminator'
+  file:
+    path: '{{ item }}'
+    state: 'directory'
+  with_items:
+    - '/home/fsevestre/.config/terminator'
+
+- name: 'System | Config terminator'
+  template:
+    src: 'terminatorconfig.j2'
+    dest: '/home/fsevestre/.config/terminator/config'
+
+- name: 'System | Install peek (Animated GIF screen recorder tool)'
+  shell: '{{ item }}'
+  become: true
+  with_items:
+    - 'add-apt-repository -y ppa:peek-developers/stable'
+    - 'apt-get update'
+    - 'apt-get install -y peek'
+
+- name: 'System | Install nodejs + npm'
+  apt:
+    pkg: '{{ item }}'
+    state: 'present'
+  become: true
+  with_items:
+    - 'nodejs'
+    - 'npm'
+
+- name: 'Git | Install diff-so-fancy'
+  npm:
+    name: 'diff-so-fancy'
+    state: 'latest'
+    global: 'yes'
+
+- name: 'Git | Add .gitconfig file'
+  template:
+    src: 'gitconfig.j2'
+    dest: '/home/fsevestre/.gitconfig'
+  when: 'GENERATE_GIT_CONFIG is defined and GENERATE_GIT_CONFIG == "y"'
+
+- name: 'Git | Add .gitignore_global file'
+  template:
+    src: 'gitignore_global.j2'
+    'dest': '/home/fsevestre/.gitignore_global'
+
+- name: 'Docker | Install ctop (htop for Docker containers)'
+  shell: '{{ item }}'
+  become: true
+  with_items:
+    - 'wget https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linux-amd64 -O /usr/local/bin/ctop'
+    - 'chmod +x /usr/local/bin/ctop'

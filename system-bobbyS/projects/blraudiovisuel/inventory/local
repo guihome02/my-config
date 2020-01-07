@@ -1,0 +1,2 @@
+[webservers]
+blraudiovisuel ansible_connection=docker ansible_host=php ansible_user=fsevestre

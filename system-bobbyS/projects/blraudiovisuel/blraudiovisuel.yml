@@ -1,0 +1,17 @@
+---
+- name: Deployment - blraudiovisuel
+  hosts: blraudiovisuel
+  vars_files:
+    - vars/{{ inventory }}.yml
+  vars_prompt:
+    - name: "connection_password"
+      prompt: "Connection password (not used for local environment)"
+      private: yes
+    - name: "database_password"
+      prompt: "Database password"
+      private: yes
+    - name: "github_token"
+      prompt: "GitHub token"
+      private: yes
+  roles:
+    - { role: blraudiovisuel }
